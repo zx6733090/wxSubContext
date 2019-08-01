@@ -11,24 +11,17 @@
 3. 微信开发者工具打开工程目录查看效果
 
 ### API
-1. loadSprite(path, isScale9) 创建精灵  
-@param {String} path 图片路径  
-@param {Boolean} isScale9  九宫格缩放模式  
+1. loadSprite(path, isScale9) 创建精灵   
 @usage  
    >var sprite = loadSprite(path, isScale9)  
    >scene.add(sprite)`
 
 2. loadText(txt, size, color) 创建文本  
-@param {String} txt 文字  
-@param {Number} size 字体大小  
-@param {cc.Color} color 颜色  
 @usage  
    >var txt = loadText("test",28,cc.Color(0,0,0))  
    >scene.add(txt)`
    
-3. loadListView(size, def) 创建滚动视图
-@param {cc.Size} size 视图大小  
-@param {Object} def  
+3. loadListView(size, def) 创建滚动视图   
 @usage  
    >var list = loadListView(cc.size(500,400), {  
    >   itemMargin = 0          //项边距  
