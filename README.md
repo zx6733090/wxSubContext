@@ -11,33 +11,22 @@
 3. 微信开发者工具打开工程目录查看效果
 
 ### API
-1. loadSprite(path, isScale9) 创建精灵   
-@usage  
+1. loadSprite(path, isScale9) 创建精灵  
    >var sprite = loadSprite(path, isScale9)  
    >scene.add(sprite)`
 
-2. loadText(txt, size, color) 创建文本  
-@usage  
+2. loadText(txt, size, color) 创建文本 
    >var txt = loadText("test",28,cc.Color(0,0,0))  
    >scene.add(txt)`
    
 3. loadListView(size, def) 创建滚动视图   
-@usage  
    >var list = loadListView(cc.size(500,400), {  
    >   itemMargin = 0          //项边距  
    >})  
    >scene.add(list)
    
-### 支持的通用方法,使用和cocos一样，坐标系也是一致的
-+ setPosition
-+ setContentSize
-+ setAnchorPoint
-+ setScale
-+ setRotation
-+ getBoundingBox
-+ removeAllChildren
-+ add
-+ destory
+### 方法
+ setPosition、  setContentSize、 setAnchorPoint、 setScale、 setRotation、 getBoundingBox、 removeAllChildren、 add、 destory
 ### 扩展
 node.addEvent({  
   onTouchBegan:()=>{},  
