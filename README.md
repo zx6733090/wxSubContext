@@ -10,23 +10,11 @@
       子域的内容会适配到节点的大小。
 3. 微信开发者工具打开工程目录查看效果
 
-### API
-1. loadSprite(path, isScale9) 创建精灵  
-   >var sprite = loadSprite(path, isScale9)  
-   >scene.add(sprite)`
-
-2. loadText(txt, size, color) 创建文本 
-   >var txt = loadText("test",28,cc.Color(0,0,0))  
-   >scene.add(txt)`
-   
-3. loadListView(size, def) 创建滚动视图   
-   >var list = loadListView(cc.size(500,400), {  
-   >   itemMargin = 0          //项边距  
-   >})  
-   >scene.add(list)
-   
 ### 方法
- setPosition、  setContentSize、 setAnchorPoint、 setScale、 setRotation、 getBoundingBox、 removeAllChildren、 add、 destory
+ setPosition、  setContentSize、 setAnchorPoint、 setScale、 setRotation、 getBoundingBox、 removeAllChildren、 add、 destory  
+ 1. loadSprite(path, isScale9) 创建精灵   
+ 2. loadText(txt, size, color) 创建文本  
+ 3. loadListView(size, def) 创建滚动视图  
 ### 扩展
 node.addEvent({  
   onTouchBegan:()=>{},  
@@ -34,3 +22,28 @@ node.addEvent({
   onTouchEnded:()=>{},  
   onTouchCancel:()=>{}  
 })
+
+### 实例-排行榜
+        var data = [{nickname:"test",avatarUrl:"SubGame/res/images/avatar_man.png",score:100}]
+        var list = scene.add(loadListView(cc.size(canvas.width, canvas.height), {  
+               itemMargin: 4  
+          }))  
+          list.setAnchorPoint(0, 0)  
+          for (var i = 0; i < data.length; i++) {  
+              var v = res[i]  
+              var bg = new Node
+              bg.setContentSize(335, 82)  
+              //昵称
+              var nick = bg.add(loadText(getFixString(v.nickname,7), 24, cc.c3b(145, 102, 70))
+              nick.setPosition(-44, 17)
+              nick.setAnchorPoint(0, 0.5)
+              //头像
+              var head = bg.add(loadSprite(v.avatarUrl))
+              head.setPosition(-79, 0)
+              head.setContentSize(52, 52)
+              //分数
+              var score = scene.add(loadText(v.score, 24, cc.c3b(145, 102, 70))
+              score.setPosition(-44, -15)
+              score.setAnchorPoint(0, 0.5)
+              list.add(bg)
+          }  
