@@ -20,6 +20,8 @@ node.addEvent({
 })
 
 ### 实例-排行榜
+![rank](https://raw.githubusercontent.com/zx6733090/wxSubContext/master/demo/creator.png)   
+
         创建listview
         var list = cc.ListView(cc.size(canvas.width, canvas.height - 20), {
             itemMargin: 4 //指定边距
