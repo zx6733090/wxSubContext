@@ -225,7 +225,7 @@ window.render = function() {
 //加载精灵
 //@param {String} path 图片路径
 //@param {Boolean} isScale9  九宫格缩放模式
-window.loadSprite = function(path, isScale9) {
+cc.Sprite = function(path, isScale9) {
     var node = new Node
     node.type = "sprite"
     node.isScale9 = isScale9
@@ -263,7 +263,7 @@ window.loadSprite = function(path, isScale9) {
 //@param {cc.Color} color 颜色
 //@usage
 //  loadText("test",28,cc.Color(0,0,0))
-window.loadText = function(txt, size, color) {
+cc.Label = function(txt, size, color) {
     var node = new Node
     node.type = "text"
     node.fontSize = size || 24
@@ -285,7 +285,7 @@ window.loadText = function(txt, size, color) {
 //  loadListView(cc.size(500,400), {
 //      itemMargin = 0          //项边距
 //  })
-window.loadListView = function(size, def) {
+cc.ListView = function(size, def) {
     var node = new Node
     node.setContentSize(size)
     node.type = "listview"
@@ -367,31 +367,31 @@ wx.onMessage(msg => {
         data = data.concat(data)
         data = data.concat(data)
         data = data.concat(data)
-        var list = scene.add(loadListView(cc.size(canvas.width, canvas.height - 20), {
+        var list = scene.add(cc.ListView(cc.size(canvas.width, canvas.height - 20), {
             itemMargin: 4
         }))
         for (var i = 0; i < data.length; i++) {
             var v = data[i]
             var order = i + 1
-            var bg = loadSprite(`${imgPath}item_bg.png`, true)
+            var bg = cc.Sprite(`${imgPath}item_bg.png`, true)
             bg.setContentSize(335, 82)
             //序号
-            var rk = order <= 3 ? loadSprite(`${imgPath}no${order}.png`) : loadText(order, 24, cc.c3b(145, 102, 70))
+            var rk = order <= 3 ? cc.Sprite(`${imgPath}no${order}.png`) : cc.Label(order, 24, cc.c3b(145, 102, 70))
             rk.setPosition(-136, 0)
             if (order <= 3) {
                 rk.setContentSize(48, 46)
             }
             bg.add(rk)
             //昵称
-            var nick = bg.add(loadText(v.nickname, 24, cc.c3b(145, 102, 70)))
+            var nick = bg.add(cc.Label(v.nickname, 24, cc.c3b(145, 102, 70)))
             nick.setPosition(-44, 17)
             nick.setAnchorPoint(0, 0.5)
             //头像
-            var head = bg.add(loadSprite(v.avatarUrl))
+            var head = bg.add(cc.Sprite(v.avatarUrl))
             head.setPosition(-79, 0)
             head.setContentSize(52, 52)
             //分数
-            var score = bg.add(loadText(v.score, 24, cc.c3b(145, 102, 70)))
+            var score = bg.add(cc.Label(v.score, 24, cc.c3b(145, 102, 70)))
             score.setPosition(-44, -15)
             score.setAnchorPoint(0, 0.5)
             list.add(bg)

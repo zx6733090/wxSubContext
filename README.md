@@ -8,9 +8,9 @@
 
 ### 方法
  setPosition、  setContentSize、 setAnchorPoint、 setScale、 setRotation、 getBoundingBox、 removeAllChildren、 add、 destory  
- 1. loadSprite(path, isScale9) 创建精灵   
- 2. loadText(txt, size, color) 创建文本  
- 3. loadListView(size, def) 创建滚动视图  
+ 1. cc.Sprite(path, isScale9) 创建精灵   
+ 2. cc.Label(txt, size, color) 创建文本  
+ 3. cc.ListView(size, def) 创建滚动视图  
 ### 扩展
 node.addEvent({  
   onTouchBegan:()=>{},  
@@ -20,32 +20,23 @@ node.addEvent({
 })
 
 ### 实例-排行榜
-        var list = scene.add(loadListView(cc.size(canvas.width, canvas.height - 20), {
-            itemMargin: 4
-        }))
-        for (var i = 0; i < data.length; i++) {
-            var v = data[i]
-            var order = i + 1
-            var bg = loadSprite(`${imgPath}item_bg.png`, true)
-            bg.setContentSize(335, 82)
-            //序号
-            var rk = order <= 3 ? loadSprite(`${imgPath}no${order}.png`) : loadText(order, 24, cc.c3b(145, 102, 70))
-            rk.setPosition(-136, 0)
-            if (order <= 3) {
-                rk.setContentSize(48, 46)
-            }
-            bg.add(rk)
-            //昵称
-            var nick = bg.add(loadText(v.nickname, 24, cc.c3b(145, 102, 70)))
-            nick.setPosition(-44, 17)
-            nick.setAnchorPoint(0, 0.5)
-            //头像
-            var head = bg.add(loadSprite(v.avatarUrl))
-            head.setPosition(-79, 0)
-            head.setContentSize(52, 52)
-            //分数
-            var score = bg.add(loadText(v.score, 24, cc.c3b(145, 102, 70)))
-            score.setPosition(-44, -15)
-            score.setAnchorPoint(0, 0.5)
-            list.add(bg)
+        创建listview
+        var list = cc.ListView(cc.size(canvas.width, canvas.height - 20), {
+            itemMargin: 4 //指定边距
         }
+        创建列表项背景，设置九宫格为true
+        var item = cc.Sprite(`${imgPath}item_bg.png`, true)
+        ////////////////添加子节点
+        //创建昵称
+        var nick = cc.Label(nickname, 24, cc.c3b(145, 102, 70))
+        //设置位置，锚点等
+        nick.setPosition(..)
+        nick.setAnchorPoint(...)
+        //创建头像
+        var avatar = cc.Sprite(avatarUrl)
+        //添加到父节点
+        item.add(nick)
+        item.add(avatar)
+        //将list添加到场景
+        scene.add(list)
+        
