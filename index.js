@@ -28,41 +28,6 @@ Object.assign(window, {
                 return t.x < pt.x && t.x + t.width > pt.x && t.y < pt.y && t.y + t.height > pt.y
             }
         })
-    },
-    setUserData(key, value, maximize) {
-        //上传数据,若希望把游戏的排行榜显示于小游戏中心必须包含wxgame字段
-        wx.getUserCloudStorage({
-            keyList: [key],
-            success: res => {
-                var obj = res.KVDataList[0]
-                if (obj && maximize && JSON.parse(obj.value).wxgame.score > value) {
-                    return;
-                }
-                wx.setUserCloudStorage({
-                    KVDataList: [{
-                        key: key,
-                        value: JSON.stringify({
-                            wxgame: {
-                                score: value,
-                                update_time: Date.now()
-                            }
-                        })
-                    }]
-                });
-            }
-        });
-    },
-    getUserData(key, cb) {
-        wx.getFriendCloudStorage({
-            keyList: [key],
-            success: res => {
-                var data = res.data;
-                data.forEach(v2 => v2.KVDataList[0].value = JSON.parse(v2.KVDataList[0].value).wxgame.score);
-                //从大到小 排序
-                data.sort((a, b) => b.KVDataList[0].value - a.KVDataList[0].value);
-                cb(data);
-            }
-        });
     }
 })
 //使用源覆盖模式
@@ -82,17 +47,6 @@ function matMul(a, b) {
         }
     }
     return rs
-}
-//截取固定长度字串
-function getFixString(str, count) {
-    var cur = 0
-    for (var i = 0; i < str.length; i++) {
-        cur = cur + (str[i].charCodeAt(0) <= 127 ? 0.5 : 1)
-        if (cur > count) {
-            return str.substring(0, i)
-        }
-    }
-    return str
 }
 //节点对象
 function Node() {
@@ -189,7 +143,7 @@ Node.prototype = {
 window.scene = new Node()
 
 //渲染场景
-window.render = function () {
+window.render = function() {
     if (render.isDirty) {
         return
     }
@@ -202,7 +156,7 @@ window.render = function () {
         //清空画布
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        var draw = function (node, bUpdate) {
+        var draw = function(node, bUpdate) {
             var redraw = node.isDirty || bUpdate
             if (redraw) {
                 //更新变动部分的矩阵
@@ -271,11 +225,11 @@ window.render = function () {
 //加载精灵
 //@param {String} path 图片路径
 //@param {Boolean} isScale9  九宫格缩放模式
-window.loadSprite = function (path, isScale9) {
+window.loadSprite = function(path, isScale9) {
     var node = new Node
     node.type = "sprite"
     node.isScale9 = isScale9
-    node.loadTexture = function (path) {
+    node.loadTexture = function(path) {
         if (!path) {
             this.texture = null
             return
@@ -309,12 +263,12 @@ window.loadSprite = function (path, isScale9) {
 //@param {cc.Color} color 颜色
 //@usage
 //  loadText("test",28,cc.Color(0,0,0))
-window.loadText = function (txt, size, color) {
+window.loadText = function(txt, size, color) {
     var node = new Node
     node.type = "text"
     node.fontSize = size || 24
     node.color = color || cc.c3b(255, 255, 255)
-    node.setString = function (str) {
+    node.setString = function(str) {
         node.string = str
         context.font = node.fontSize + "px Arial";
         this.setContentSize(context.measureText(str).width, this.fontSize / 0.88)
@@ -331,14 +285,15 @@ window.loadText = function (txt, size, color) {
 //  loadListView(cc.size(500,400), {
 //      itemMargin = 0          //项边距
 //  })
-window.loadListView = function (size, def) {
+window.loadListView = function(size, def) {
     var node = new Node
     node.setContentSize(size)
     node.type = "listview"
     node.curOffset = 0
+    node.bClip = true
     node.itemMargin = def && def.itemMargin || 0
     node.content = node.add(new Node)
-    node.add = function (item) {
+    node.add = function(item) {
         node.content.add(item)
         //计算列表项位置
         var curh = 0
@@ -350,7 +305,7 @@ window.loadListView = function (size, def) {
         var cntHeight = curh - node.itemMargin
         node.exceed = Math.max(0, cntHeight - node.height)
     }
-    node.scroll = function (offset) {
+    node.scroll = function(offset) {
         node.curOffset = Math.max(0, Math.min(this.exceed, node.curOffset + offset))
         node.content.setPosition(0, node.curOffset)
     }
@@ -400,47 +355,46 @@ wx.onMessage(msg => {
     if (msg.event == "viewport") {
         //cocos引擎传入的子域视口区域
         viewRect = cc.rect(msg.x, msg.y, msg.width, msg.height)
-    } else if (msg.event == "show_rank") {
+        scene.setPosition(canvas.width / 2, canvas.height / 2)
         scene.removeAllChildren()
-        var imgPath = "SubGame/res/images/"
-        var loadItem = function (order, avatar, nick, id) {
-            var bg = new loadSprite(imgPath + "item_bg.png", true)
-            bg.setContentSize(335, 82)
 
+        var imgPath = "SubGame/res/images/"
+        var data = [{
+            nickname: "test",
+            avatarUrl: `${imgPath}avatar.jpg`,
+            score: 100
+        }]
+        data = data.concat(data)
+        data = data.concat(data)
+        data = data.concat(data)
+        var list = scene.add(loadListView(cc.size(canvas.width, canvas.height - 20), {
+            itemMargin: 4
+        }))
+        for (var i = 0; i < data.length; i++) {
+            var v = data[i]
+            var order = i + 1
+            var bg = loadSprite(`${imgPath}item_bg.png`, true)
+            bg.setContentSize(335, 82)
             //序号
             var rk = order <= 3 ? loadSprite(`${imgPath}no${order}.png`) : loadText(order, 24, cc.c3b(145, 102, 70))
             rk.setPosition(-136, 0)
+            if (order <= 3) {
+                rk.setContentSize(48, 46)
+            }
             bg.add(rk)
+            //昵称
+            var nick = bg.add(loadText(v.nickname, 24, cc.c3b(145, 102, 70)))
+            nick.setPosition(-44, 17)
+            nick.setAnchorPoint(0, 0.5)
             //头像
-            var head = loadSprite(avatar)
+            var head = bg.add(loadSprite(v.avatarUrl))
             head.setPosition(-79, 0)
             head.setContentSize(52, 52)
-            bg.add(head)
-            //昵称
-            var name = loadText(nick, 24, cc.c3b(145, 102, 70))
-            name.setPosition(-44, 17)
-            name.setAnchorPoint(0, 0.5)
-            bg.add(name)
             //分数
-            var score = loadText(id, 24, cc.c3b(145, 102, 70))
+            var score = bg.add(loadText(v.score, 24, cc.c3b(145, 102, 70)))
             score.setPosition(-44, -15)
             score.setAnchorPoint(0, 0.5)
-            bg.add(score)
-            return bg
+            list.add(bg)
         }
-        getUserData("score", res => {
-            var list = scene.add(loadListView(cc.size(canvas.width, canvas.height), {
-                itemMargin: 4
-            }))
-            list.setAnchorPoint(0, 0)
-            for (var i = 0; i < res.length; i++) {
-                var v = res[i]
-                var score = res[i].KVDataList[0].value
-                var item = loadItem(i + 1, v.avatarUrl, getFixString(v.nickname, 7), score)
-                list.add(item)
-            }
-        })
-    } else if (msg.event == "update_score") {
-        setUserData("score", msg.data)
     }
 })
