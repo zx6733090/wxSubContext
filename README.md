@@ -38,5 +38,6 @@ node.addEvent({
         item.add(nick)
         item.add(avatar)
         //将list添加到场景
-        scene.add(list)
+        scene.add(list)  
+ ![rank](https://raw.githubusercontent.com/zx6733090/wxSubContext/master/demo/rank.gif "排行榜")
         
