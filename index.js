@@ -340,7 +340,7 @@ function doEvent(name, event) {
             //增加偏移量
             pt.delta = cc.p(pt.x - p.x, pt.y - p.y)
             if (v.listener[name]) {
-                v.listener[name].call(v, pt)
+                v.listener[name](pt)
             }
             doEvent.prePoint = pt
         }
